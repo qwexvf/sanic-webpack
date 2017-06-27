@@ -1,7 +1,10 @@
-import ujson as json
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 
-class Webpack(object):
+class Webpack:
     def __init__(self, app=None):
         self.app = app
 
