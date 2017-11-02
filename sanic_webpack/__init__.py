@@ -1,14 +1,9 @@
 import ujson as json
 
 
-class Webpack(object):
-    def __init__(self, app=None):
-        self.app = app
-
-        if app is not None:
-            self.init_app(app)
-
-    def init_app(self, app):
+class Webpack:
+    @classmethod
+    def init_app(cls, app):
         """
         Mutate the application passed in as explained here:
         http://flask.pocoo.org/docs/0.10/extensiondev/
@@ -16,13 +11,14 @@ class Webpack(object):
         :param app: Sanic application
         :return: None
         """
+        webpack = cls()
 
         # Setup a few sane defaults.
         app.config.setdefault('WEBPACK_MANIFEST_PATH',
                               '/tmp/themostridiculousimpossiblepathtonotexist')
         app.config.setdefault('WEBPACK_ASSETS_URL', None)
 
-        self._set_asset_paths(app)
+        webpack._set_asset_paths(app)
 
         # We only want to refresh the webpack stats in development mode,
         # not everyone sets this setting, so let's assume it's production.
@@ -33,14 +29,14 @@ class Webpack(object):
         if not hasattr(app, 'extensions'):
             app.extensions = {}
 
-        app.extensions['webpack'] = self
+        app.extensions['webpack'] = webpack
 
         @app.middleware('request')
         async def add_webpack_to_request(request):
             if 'javascript_tag' not in request:
-                request['javascript_tag'] = self.javascript_tag
-                request['stylesheet_tag'] = self.stylesheet_tag
-                request['asset_url_for'] = self.asset_url_for
+                request['javascript_tag'] = webpack.javascript_tag
+                request['stylesheet_tag'] = webpack.stylesheet_tag
+                request['asset_url_for'] = webpack.asset_url_for
 
     def _set_asset_paths(self, app):
         """
