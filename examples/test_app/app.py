@@ -2,9 +2,6 @@ from sanic import Sanic
 from sanic_jinja2 import SanicJinja2
 from sanic_webpack import Webpack
 
-# declare webpack extension
-webpack = Webpack()
-
 # init sanic app
 app = Sanic(__name__)
 # we are using jinaj2
@@ -19,7 +16,7 @@ params = {
 # update configs
 app.config.update(params)
 # init webpack extension
-webpack.init_app(app)
+Webpack.init_app(app)
 
 
 @app.route('/')
